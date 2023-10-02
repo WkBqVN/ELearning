@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,18 @@ namespace ELearning.Manager
             directories = new List<string>();
             folders = new List<string>();
         }
-        
+        public String openFileWord(string fileWordPath)
+        {
+            try
+            {
+                Process.Start("C:\\Program Files\\LibreOffice\\program\\soffice.exe", $"\"{fileWordPath}\"");
+            }catch(Exception e)
+            {
+                Process.Start(fileWordPath);
+                return e.Message;
+            }
+            return "Hello world";
+        } 
         private void readDirectoryData(string path)
         {
             // full path of files

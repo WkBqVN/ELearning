@@ -9,6 +9,7 @@ namespace ELearning
     {
         private string srcPath = "K:\\Work\\ELearning\\Mos_data\\mos\\world\\WORD\\MOS Word  2016 - GMetrix Online Buoi 1";
         private string pdfFilePath = "K:\\Work\\ELearning\\Mos_data\\mos\\world\\WORD\\MOS Word  2016 - GMetrix Online Buoi 1\\TAI LIEU MOS WORD 2016 BUOI 1.pdf";
+        private string wordFilePath = "K:\\Work\\ELearning\\Mos_data\\mos\\world\\WORD\\MOS Word  2016 - GMetrix Online Buoi 1\\Project 1\\Bicycles.docx";
         private string currentProject = "";
         private FileManager fileManager;
         private ProjectManager projectManager;
@@ -258,7 +259,7 @@ namespace ELearning
 
         private void checkTest_click(object sender, EventArgs e)
         {
-            resultMessage.Text = currentProject;
+            resultMessage.Text = fileManager.openFileWord(wordFilePath);
         }
 
         private void comboBoxProjectsSelectedIndexChanged(object sender, EventArgs e)
