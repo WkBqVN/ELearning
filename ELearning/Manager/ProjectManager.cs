@@ -10,32 +10,28 @@ namespace ELearning.Manager
     internal class ProjectManager
     {
         TaskManager taskManager = new TaskManager();
-
+        public List<Project> projects;
         string ProjectTitle = "";
         string projectTag = "Project";
         int startProjectIndex =0;
         int endProjecttIndex = 0;
         List<string> data;
         // multi project
-        ProjectManager(string pdfFilePath)
+        public ProjectManager(){
+            projects = new List<Project>();
+        }
+
+        public void initiallize(string pdfFilePath)
         {
             data = taskManager.ReadPDFData(pdfFilePath);
-        }
-
-        public List<Project> GetListProject(string projectPath) { 
-
-        }
-
-        public Project GetTask(string pdfFilePath)
-        {
-            Dictionary<string, int[]> projects;
-            Project project = new Project();
-            projects = getProjectsIndexs(data);
-            foreach (string key in projects.Keys)
+            Dictionary<string, int[]> listProject = getProjectsIndexs(data);
+            foreach (string key  in listProject.Keys)
             {
-                project.SubTask = taskManager.GetListSubTask(data, projects[key][0], projects[key][1]);
+                Project project = new Project();
+                project.ProjectTitle = key;
+                project.SubTask = taskManager.GetListSubTask(data, listProject[key][0], listProject[key][1]);
+                projects.Add(project);
             }
-            return project;
         }
 
         public Dictionary<string, int[]> getProjectsIndexs(List<string> data)
@@ -62,7 +58,7 @@ namespace ELearning.Manager
                     }
                     listProject.Add(projectTag + " " + projectCount.ToString(), new int[2] { startProjectIndex, endProjecttIndex });
                     projectCount++;
-                    startProjectIndex = endProjecttIndex;
+                    startProjectIndex = endProjecttIndex+3;
                 }
             }
             return listProject;

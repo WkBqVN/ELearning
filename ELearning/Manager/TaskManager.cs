@@ -45,7 +45,7 @@ namespace ELearning.Manager
                 else if ((data[i] == tagTask && data[i +1 ] != taskCount.ToString()) || i == endIndex-1)
                 {
                     tasks.Add(taskTitle,taskDescription);
-                    taskTitle = data[i] + data[++i];
+                    taskTitle = data[i] +" "+ data[++i];
                     taskDescription = "";
                     taskCount++;
                 }

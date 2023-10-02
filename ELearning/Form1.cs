@@ -7,18 +7,22 @@ namespace ELearning
 {
     public partial class MainForm : Form
     {
-        private string srcPath = "K:\\Work\\Mos_data\\mos\\world\\WORD\\MOS Word  2016 - GMetrix Online Buoi 1";
+        private string srcPath = "K:\\Work\\ELearning\\Mos_data\\mos\\world\\WORD\\MOS Word  2016 - GMetrix Online Buoi 1";
+        private string pdfFilePath = "K:\\Work\\ELearning\\Mos_data\\mos\\world\\WORD\\MOS Word  2016 - GMetrix Online Buoi 1\\TAI LIEU MOS WORD 2016 BUOI 1.pdf";
         private string currentProject = "";
         private FileManager fileManager;
-        private TaskManager taskManager;
+        private ProjectManager projectManager;
         public MainForm()
         {
             fileManager = new FileManager();
-            taskManager = new TaskManager();
-            // init default set up base on design
+            InitializeData();
             InitializeComponent();
-            // set up default on view
             SetUpComponent();
+        }
+        private void InitializeData()
+        {
+            projectManager = new ProjectManager();
+            projectManager.initiallize(pdfFilePath);
         }
 
         private void InitializeComponent()
@@ -157,61 +161,23 @@ namespace ELearning
         }
         private void InitTabPages(TabControl tabControl)
         {
-            string pdfFilePath = "K:\\Work\\Mos_data\\mos\\world\\WORD\\MOS Word  2016 - GMetrix Online Buoi 1\\TAI LIEU MOS WORD 2016 BUOI 1.pdf";
             tabControl.Location = new Point(25, 75);
             tabControl.Name = "tabControl1";
             tabControl.SelectedIndex = 0;
             tabControl.Size = new Size(435, 200);
             tabControl.TabIndex = 1;
 
-            TabPage tab1 = new TabPage();
-            //tabPage1.Location = new Point(4, 24);
-            TextBox s = new TextBox();
-            Project project = taskManager.GetTask(pdfFilePath);
-            //s.Text = project.ProjectTitle + project.SubTask["Project 1"];
-            //s.Text = taskManager.ReadPDFData(pdfFilePath)[15]; 
-            s.Size = new Size(435, 195);
-            s.Multiline = true;
-            s.ScrollBars = ScrollBars.Vertical;
-
-            TextBox x = new TextBox();
-            x.Text = "hellosadfksadfdsajfsdakfjsadkfjsdkafjsadkjfskdajfskadjfksdajfsdkajfsdakfsdakjfsadfkdsafkjsadfdasjkfsdkdsakfsdakjfds[";
-            x.Size = new Size(435, 195);
-            x.Multiline = true;
-            x.ScrollBars = ScrollBars.Vertical;
-
-            tab1.Name = "task 1";
-            tab1.Padding = new Padding(3);
-            tab1.Size = new Size(431, 167);
-            tab1.TabIndex = 0;
-            tab1.Text = "task 1";
-            tab1.UseVisualStyleBackColor = true;
-            tab1.Controls.Add(s);
-
-            TabPage tab2 = new TabPage();
-            tab2.Name = "task 1";
-            tab2.Padding = new Padding(3);
-            tab2.Size = new Size(431, 167);
-            tab2.TabIndex = 0;
-            tab2.Text = "task 2";
-            tab2.UseVisualStyleBackColor = true;
-            tab2.Controls.Add(x);
-
-            TabPage tab3 = new TabPage();
-            tab3.Name = "task 1";
-            tab3.Padding = new Padding(3);
-            tab3.Size = new Size(431, 167);
-            tab3.TabIndex = 0;
-            tab3.Text = "task 3";
-            tab3.UseVisualStyleBackColor = true;
-
-            TabPage[] tagPages = new TabPage[]
+            for(int i = 0; i < projectManager.projects.Count; i++)
             {
-                tab1,tab2,tab3
-            };
-            List<TabPage> tabs = setTabPages(project);
+                if (projectManager.projects[i].ProjectTitle == currentProject)
+                {
+                    List<TabPage> tabs = getTabPages(projectManager.projects[0].SubTask);
+                    setListTabs(tabControl, tabs);
+                }
+            }
+            //List<TabPage> tabs = getTabPages(projectManager.projects[0].SubTask);
 
-            setListTabs(tabControl, tabs);
+            //setListTabs(tabControl, tabs);
         }
         private void setListTabs(TabControl tabControl, List<TabPage> tabPages)
         {
@@ -220,21 +186,21 @@ namespace ELearning
                 tabControl.TabPages.Add(tabPages[i]);
             }
         }
-        private List<TabPage> setTabPages(Project project)
+        private List<TabPage> getTabPages(Dictionary<string,string> subTasks)
         {
             List<TabPage> listTab = new List<TabPage>();
-            //for (int i =0; i < project.getProjectsIndexs ;i++)
-            //{
-            //    TabPage tabPage = new TabPage();
-            //    tabPage.Text = key;
-            //    TextBox textBox = new TextBox();
-            //    textBox.Text = project.SubTask[key];
-            //    textBox.Size = new Size(435, 195);
-            //    textBox.Multiline = true;
-            //    textBox.ScrollBars = ScrollBars.Vertical;
-            //    tabPage.Controls.Add(textBox);
-            //    listTab.Add(tabPage);
-            //}
+            foreach (string key in subTasks.Keys)
+            {
+                    TabPage tabPage = new TabPage();
+                    tabPage.Text = key;
+                    TextBox textBox = new TextBox();
+                    textBox.Text = subTasks[key];
+                    textBox.Size = new Size(435, 195);
+                    textBox.Multiline = true;
+                    textBox.ScrollBars = ScrollBars.Vertical;
+                    tabPage.Controls.Add(textBox);
+                    listTab.Add(tabPage);
+            }
             return listTab;
         }
        
@@ -297,15 +263,15 @@ namespace ELearning
 
         private void comboBoxProjectsSelectedIndexChanged(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(comboBoxProjects.SelectedItem.ToString()))
+            for (int i = 0; i < projectManager.projects.Count; i++)
             {
-                currentProject = "failed to get Project data";
+                 if (projectManager.projects[i].ProjectTitle == comboBoxProjects.SelectedItem.ToString())
+                 {
+                    tabControl.TabPages.Clear();
+                    List<TabPage> tabs = getTabPages(projectManager.projects[i].SubTask);
+                    setListTabs(tabControl, tabs);
+                 }
             }
-            else
-            {
-                currentProject = comboBoxProjects.SelectedItem.ToString();
-            }
-            
         }
 
         private void Form1_Load(object sender, EventArgs e)
